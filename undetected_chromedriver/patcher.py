@@ -114,6 +114,8 @@ class Patcher(object):
         if self.platform.endswith("darwin"):
             if self.is_old_chromedriver:
                 self.platform_name = "mac64"
+            elif(platform.processor() == "arm"):
+                self.platform_name = "mac-arm64"
             else:
                 self.platform_name = "mac-x64"
             self.exe_name %= ""
