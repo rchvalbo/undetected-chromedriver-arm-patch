@@ -22,6 +22,7 @@ def start_detached(executable, *args):
     :param args: arguments to the executable, eg: ['--param1_key=param1_val', '-vvv' ...]
     :return: pid of the grandchild process
     """
+    print("[start_detached] start")
 
     # create pipe
     reader, writer = multiprocessing.Pipe(False)
@@ -40,18 +41,23 @@ def start_detached(executable, *args):
     writer.close()
     reader.close()
 
+    print("[start_detached] end -- pid:", pid)
     return pid
 
 
 def _start_detached(executable, *args, writer: multiprocessing.Pipe = None):
+    print("[_start_detached] start")
     # configure launch
     kwargs = {}
     if platform.system() == "Windows":
+        print("[_start_detached] windows")
         kwargs.update(creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
     elif sys.version_info < (3, 2):
+        print("[_start_detached] posix")
         # assume posix
         kwargs.update(preexec_fn=os.setsid)
     else:  # Python 3.2+ and Unix
+        print("[_start_detached] else.. so Python 3.2+ and Unix")
         kwargs.update(start_new_session=True)
 
     # run
@@ -59,6 +65,8 @@ def _start_detached(executable, *args, writer: multiprocessing.Pipe = None):
 
     # send pid to pipe
     writer.send(p.pid)
+
+    print("[_start_detached] end")
     sys.exit()
 
 
