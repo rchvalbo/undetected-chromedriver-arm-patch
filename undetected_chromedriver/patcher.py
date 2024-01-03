@@ -101,6 +101,7 @@ class Patcher(object):
         self.version_full = None
 
     def _set_platform_name(self):
+        print("[_set_platform_name] triggering...")
         """
         Set the platform and exe name based on the platform undetected_chromedriver is running on
         in order to download the correct chromedriver.
@@ -115,6 +116,7 @@ class Patcher(object):
             if self.is_old_chromedriver:
                 self.platform_name = "mac64"
             elif(platform.processor() == "arm"):
+                print("[_set_platform_name] is arm processor!!")
                 self.platform_name = "mac-arm64"
             else:
                 self.platform_name = "mac-x64"
@@ -272,6 +274,7 @@ class Patcher(object):
                     return LooseVersion(match[1].decode())
 
     def fetch_package(self):
+        print("[chromedriver] fetch_package")
         """
         Downloads ChromeDriver from source
 
@@ -289,6 +292,7 @@ class Patcher(object):
         return urlretrieve(download_url)[0]
 
     def unzip_package(self, fp):
+        print("[chromedriver] unzip_package")
         """
         Does what it says
 
