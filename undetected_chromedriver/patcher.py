@@ -123,6 +123,7 @@ class Patcher(object):
             self.exe_name %= ""
 
     def auto(self, executable_path=None, force=False, version_main=None, _=None):
+        print("Running auto!")
         """
 
         Args:
@@ -230,7 +231,9 @@ class Patcher(object):
                 pass
 
     def patch(self):
+        print("[patch] start")
         self.patch_exe()
+        print("[patch] end")
         return self.is_binary_patched()
 
     def fetch_release_number(self):
@@ -343,11 +346,14 @@ class Patcher(object):
         return "".join(cdc).encode()
 
     def is_binary_patched(self, executable_path=None):
+        print("[is_binary_patched] start")
         executable_path = executable_path or self.executable_path
         try:
             with io.open(executable_path, "rb") as fh:
+                print("[is_binary_patched] reading executable path...")
                 return fh.read().find(b"undetected chromedriver") != -1
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            print("[is_binary_patched] exception!", e)
             return False
 
     def patch_exe(self):

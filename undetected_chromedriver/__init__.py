@@ -261,6 +261,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         if not options:
             options = ChromeOptions()
 
+        print("CHROMEDRIVER got past the patcher...")
+
         try:
             if hasattr(options, "_session") and options._session is not None:
                 #  prevent reuse of options,
@@ -296,6 +298,9 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             options.add_argument("--user-data-dir=%s" % user_data_dir)
 
         language, keep_user_data_dir = None, bool(user_data_dir)
+
+
+        print("Got past checking the user data dir...")
 
         # see if a custom user profile is specified in options
         for arg in options.arguments:
