@@ -332,6 +332,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                         % arg
                     )
 
+        print("Got past the options.arguments loop...", user_data_dir)
+
         if not user_data_dir:
             # backward compatiblity
             # check if an old uc.ChromeOptions is used, and extract the user data dir
@@ -389,6 +391,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                     "the `browser_executable_path='{}` parameter.\n\n"
                     .format("/path/to/browser/executable" if IS_POSIX else "c:/path/to/your/browser.exe")
                 )
+        
+        print("Got past checking binary location...")
 
         self._delay = 3
 
@@ -411,6 +415,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 logger.warning("could not detect version_main."
                                "therefore, we are assuming it is chrome 108 or higher")
                 options.add_argument("--headless=new")
+
+        print("Got past checking for headless mode...")
 
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--start-maximized")
@@ -442,18 +448,22 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 fs.truncate()  # the file might be shorter
                 logger.debug("fixed exit_type flag")
         except Exception as e:
+            print("Failed to open the Default preferences in the user_data_dir...", e)
             logger.debug("did not find a bad exit_type flag ")
 
         self.options = options
 
         if not desired_capabilities:
+            print("Did not find desired capabilities... setting to options.to_capabilities()")
             desired_capabilities = options.to_capabilities()
 
         if not use_subprocess:
+            print("not using subprocesses... starting detached...")
             self.browser_pid = start_detached(
                 options.binary_location, *options.arguments
             )
         else:
+            print("Determined we should use a subprocess! Opening...")
             browser = subprocess.Popen(
                 [options.binary_location, *options.arguments],
                 stdin=subprocess.PIPE,
@@ -462,17 +472,21 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 close_fds=IS_POSIX,
             )
             self.browser_pid = browser.pid
+            print("Subprocess browser pid: ", self.browser_pid)
 
-
+        print("creating the selenium.webdriver.chromium.service.ChromiumService...")
         service = selenium.webdriver.chromium.service.ChromiumService(
             self.patcher.executable_path
         )
+        print("created!")
 
         super(Chrome, self).__init__(
             service=service,
             options=options,
             keep_alive=keep_alive,
         )
+
+        print("init happened...!")
 
         self.reactor = None
 
