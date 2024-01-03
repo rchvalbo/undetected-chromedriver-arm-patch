@@ -317,6 +317,9 @@ class Patcher(object):
         os.remove(fp)
         shutil.rmtree(self.zip_path)
         os.chmod(self.executable_path, 0o755)
+
+        print("[chromedriver] end of unzip_package")
+        print("Executable path is now: ", self.executable_path)
         return self.executable_path
 
     @staticmethod
